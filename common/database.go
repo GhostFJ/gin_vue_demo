@@ -1,11 +1,13 @@
 package common
 
 import (
-	"ginvue/model"
-	"github.com/spf13/viper"
 	"fmt"
+	"ginvue/model"
+	"net/url"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/spf13/viper"
 )
 
 var DB *gorm.DB
@@ -18,13 +20,15 @@ func InitDB() *gorm.DB {
 	username := viper.GetString("datasource.username")
 	password := viper.GetString("datasource.password")
 	charset := viper.GetString("datasource.charset")
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=true",
+	loc := viper.GetString("datasource.loc")
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=true&loc=%s",
 		username,
 		password,
 		host,
 		port,
 		database,
 		charset,
+		url.QueryEscape(loc),
 	)
 	db, err := gorm.Open(driverName, dsn)
 	if err != nil {

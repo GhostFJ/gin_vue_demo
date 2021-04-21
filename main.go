@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/spf13/viper"
 	_ "gorm.io/driver/mysql"
 )
@@ -17,10 +18,10 @@ func main() {
 	r := gin.Default()
 
 	r = CollectRoute(r)
-	// port := viper.GetString("server.port")
-	// if port != "" {
-	// 	panic(r.Run(":" + port))
-	// }
+	port := viper.GetString("server.port")
+	if port != "" {
+		panic(r.Run(":" + port))
+	}
 	panic(r.Run())
 }
 
@@ -31,6 +32,6 @@ func InitConfig() {
 	viper.AddConfigPath(workDir + "/config")
 	err := viper.ReadInConfig()
 	if err != nil {
-
+		panic(err)
 	}
 }
